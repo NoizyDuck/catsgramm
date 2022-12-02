@@ -9,6 +9,7 @@ import ru.yandex.practicum.catsgram.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.catsgram.Constants.DESCENDING_ORDER;
@@ -26,7 +27,7 @@ public class PostService {
     }
 
     public Post create(Post post) {
-        User postAuthor = userService.findUserByEmail(post.getAuthor());
+        Optional<User> postAuthor = userService.findUserById(post.getAuthor());
         if (postAuthor == null) {
             throw new UserNotFoundException(String.format(
                     "Пользователь %s не найден",
@@ -53,9 +54,9 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public List<Post> findAllByUserEmail(String email, Integer size, String sort) {
+    public List<Post> findAllByUserId(String id, Integer size, String sort) {
         return posts.stream()
-                .filter(p -> email.equals(p.getAuthor()))
+                .filter(p -> id.equals(p.getAuthor()))
                 .sorted((p0, p1) -> compare(p0, p1, sort))
                 .limit(size)
                 .collect(Collectors.toList());
